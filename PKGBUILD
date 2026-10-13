@@ -1,6 +1,6 @@
 # Maintainer: Omarchy Development Labs <omarchystore@gmail.com>
 pkgname=omarchy-browser
-pkgver=2.0.0
+pkgver=2.0.1
 pkgrel=1
 pkgdesc="Chromium browser built for Omarchy: Omarchy Store built in, theme follows Omarchy live, tracker shield, workspaces, split view, reader with local AI, command palette"
 arch=('any')

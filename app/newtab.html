@@ -9,10 +9,22 @@
 html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--fg); font: 14px/1.5 system-ui, sans-serif; }
 body { background: radial-gradient(1200px 600px at 50% -10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%), var(--bg); }
 .wrap { max-width: 980px; margin: 0 auto; padding: 9vh 32px 60px; }
-.logo { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 30px; }
-.logo img { width: 64px; height: 64px; border-radius: 16px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 34px; }
+.logo { display: flex; align-items: center; gap: 16px; }
+.logo img { width: 72px; height: 72px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
 .logo h1 { margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -.5px; }
-.logo small { display: block; color: var(--muted); font-weight: 400; font-size: 13px; }
+.logo small { display: block; color: var(--muted); font-weight: 400; font-size: 15px; margin-top: 2px; white-space: nowrap; }
+.wx { display: flex; align-items: center; gap: 22px; padding: 12px 18px; border-radius: 18px; background: var(--panel); border: 1px solid var(--border); }
+.wx-now { display: flex; align-items: center; gap: 12px; }
+.wx-ico { font-size: 38px; line-height: 1; }
+.wx-now b { display: block; font-size: 30px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+.wx-now small { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; white-space: nowrap; }
+.wx-meta { color: var(--muted); font-size: 12px; line-height: 1.6; border-left: 1px solid var(--border); padding-left: 18px; white-space: nowrap; }
+.wx-days { display: flex; gap: 14px; border-left: 1px solid var(--border); padding-left: 18px; }
+.wx-days div { text-align: center; font-size: 12px; color: var(--muted); }
+.wx-days div span { display: block; font-size: 20px; margin: 2px 0; }
+.wx-days div b { color: var(--fg); font-weight: 600; }
+@media (max-width: 900px) { .wx-days, .wx-meta { display: none; } }
 .search { display: flex; align-items: center; height: 54px; margin: 0 auto 44px; max-width: 680px; padding: 0 22px; border-radius: 999px; background: var(--panel); border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,.35); }
 .search input { flex: 1; border: 0; background: transparent; color: var(--fg); font: inherit; font-size: 17px; outline: none; }
 .search span { color: var(--muted); font-size: 12px; }
@@ -38,7 +50,14 @@ h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: va
 </head>
 <body>
 <div class="wrap">
-  <div class="logo"><img src="icons/256x256.png" alt=""><div><h1>Omarchy Browser</h1><small id="greet">Good evening</small></div></div>
+  <div class="top">
+    <div class="logo"><img src="icons/256x256.png" alt=""><div><h1 id="greet">Good evening</h1><small id="date">Loading…</small></div></div>
+    <div class="wx" id="wx" hidden>
+      <div class="wx-now"><span class="wx-ico" id="wx-ico"></span><div><b id="wx-t"></b><small id="wx-d"></small></div></div>
+      <div class="wx-meta" id="wx-meta"></div>
+      <div class="wx-days" id="wx-days"></div>
+    </div>
+  </div>
   <form class="search" id="f"><input id="q" placeholder="Search the web or type an address" autofocus spellcheck="false" autocomplete="off"><span>Ctrl+K for commands</span></form>
   <h2>Top sites</h2>
   <div class="grid" id="top"><div class="empty">Sites you visit most will show up here.</div></div>
@@ -52,6 +71,20 @@ h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: va
 const P = window.obPage;
 const $ = (s) => document.querySelector(s);
 const h = new Date().getHours(); $('#greet').textContent = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+function tick() { const n = new Date(); $('#date').textContent = n.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' · ' + n.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }); }
+tick(); setInterval(tick, 15000);
+const WX = { 0: ['☀️', 'Clear'], 1: ['🌤️', 'Mostly clear'], 2: ['⛅', 'Partly cloudy'], 3: ['☁️', 'Overcast'], 45: ['🌫️', 'Fog'], 48: ['🌫️', 'Icy fog'], 51: ['🌦️', 'Light drizzle'], 53: ['🌦️', 'Drizzle'], 55: ['🌧️', 'Heavy drizzle'], 56: ['🌧️', 'Freezing drizzle'], 57: ['🌧️', 'Freezing drizzle'], 61: ['🌧️', 'Light rain'], 63: ['🌧️', 'Rain'], 65: ['🌧️', 'Heavy rain'], 66: ['🌧️', 'Freezing rain'], 67: ['🌧️', 'Freezing rain'], 71: ['🌨️', 'Light snow'], 73: ['🌨️', 'Snow'], 75: ['❄️', 'Heavy snow'], 77: ['🌨️', 'Snow grains'], 80: ['🌦️', 'Showers'], 81: ['🌧️', 'Showers'], 82: ['⛈️', 'Heavy showers'], 85: ['🌨️', 'Snow showers'], 86: ['❄️', 'Snow showers'], 95: ['⛈️', 'Thunderstorm'], 96: ['⛈️', 'Thunderstorm, hail'], 99: ['⛈️', 'Thunderstorm, hail'] };
+(async () => {
+  try {
+    const w = await P.weather(); let [ico, desc] = WX[w.current.weather_code] || ['🌡️', 'Weather'];
+    if (w.current.is_day === 0) { if (ico === '☀️') ico = '🌙'; else if (ico === '🌤️' || ico === '⛅') ico = '☁️'; }
+    $('#wx-ico').textContent = ico; $('#wx-t').textContent = Math.round(w.current.temperature_2m) + w.unit;
+    $('#wx-d').textContent = desc + ' · ' + [w.city, w.region].filter(Boolean).join(', ');
+    $('#wx-meta').innerHTML = `Feels like ${Math.round(w.current.apparent_temperature)}${w.unit}<br>Wind ${Math.round(w.current.wind_speed_10m)} ${w.units.wind_speed_10m} · Humidity ${w.current.relative_humidity_2m}%`;
+    $('#wx-days').innerHTML = w.daily.time.slice(1, 4).map((d, i) => { const k = i + 1; const [di] = WX[w.daily.weather_code[k]] || ['🌡️']; return `<div>${new Date(d + 'T12:00').toLocaleDateString(undefined, { weekday: 'short' })}<span>${di}</span><b>${Math.round(w.daily.temperature_2m_max[k])}°</b> ${Math.round(w.daily.temperature_2m_min[k])}°</div>`; }).join('');
+    $('#wx').hidden = false;
+  } catch (_) {}
+})();
 $('#f').onsubmit = (e) => { e.preventDefault(); P.open($('#q').value); };
 function theme(t) {
   if (!t || !t.background) return;

@@ -272,6 +272,25 @@ handle('page-fetch', async (_e, url) => {
   return await Promise.race([r.text(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 15000))]);
 });
 handle('page-data', () => ({ bookmarks: db.bookmarks.slice(0, 40), top: [...db.history].sort((a, b) => b.visits - a.visits).slice(0, 10), theme: readTheme(), shield: db.settings.shield }));
+// Weather for the new tab page: location from IP (ipapi.co), forecast from Open-Meteo. Both free, no keys. Cached 20 min.
+let wx = null, wxAt = 0;
+handle('weather', async () => {
+  if (wx && Date.now() - wxAt < 20 * 60e3) return wx;
+  let loc = null;
+  for (const src of [
+    async () => { const j = await (await fetch('http://ip-api.com/json/?fields=status,city,region,countryCode,lat,lon', { signal: AbortSignal.timeout(6000) })).json(); if (j.status === 'success') return { city: j.city, region: j.region, cc: j.countryCode, lat: j.lat, lon: j.lon }; },
+    async () => { const j = await (await fetch('https://ipwho.is/', { signal: AbortSignal.timeout(6000) })).json(); if (j.success !== false && j.latitude) return { city: j.city, region: j.region_code || j.region, cc: j.country_code, lat: j.latitude, lon: j.longitude }; },
+    async () => { const j = await (await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(6000) })).json(); if (j.latitude) return { city: j.city, region: j.region_code, cc: j.country_code, lat: j.latitude, lon: j.longitude }; },
+  ]) { try { loc = await src(); if (loc) break; } catch (_) {} }
+  if (!loc) throw new Error('no location');
+  const us = loc.cc === 'US';
+  const u = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m,is_day&daily=temperature_2m_max,temperature_2m_min,weather_code&temperature_unit=${us ? 'fahrenheit' : 'celsius'}&wind_speed_unit=${us ? 'mph' : 'kmh'}&timezone=auto&forecast_days=4`;
+  const w = await (await fetch(u, { signal: AbortSignal.timeout(8000) })).json();
+  if (!w.current) throw new Error('no forecast');
+  wx = { city: loc.city, region: loc.region, unit: us ? '°F' : '°C', current: w.current, daily: w.daily, units: w.current_units };
+  wxAt = Date.now();
+  return wx;
+});
 handle('set-default', () => { spawn('xdg-settings', ['set', 'default-web-browser', 'omarchy-browser.desktop'], { stdio: 'ignore' }).on('error', () => {}); });
 handle('is-default', () => new Promise((res) => execFile('xdg-settings', ['get', 'default-web-browser'], (e, out) => res(!e && /omarchy-browser/.test(out)))));
 

@@ -49,7 +49,7 @@ function newTab(url = NEWTAB, { activate = true, ws = wsId } = {}) {
   $('#pages').appendChild(view);
   const t = { id: Math.random().toString(36).slice(2), view, url, title: '', loading: true, ws, blocked: 0 };
   tabs.push(t);
-  view.addEventListener('did-start-loading', () => { t.loading = true; render(); });
+  view.addEventListener('did-start-loading', () => { t.loading = true; render(); if (t === active) { const b = $('.gh-banner'); if (b) b.remove(); } });
   view.addEventListener('did-stop-loading', () => { t.loading = false; t.url = view.getURL(); render(); if (t === active) syncNav(); detectGitHub(t); });
   view.addEventListener('did-navigate', (e) => { t.url = e.url; t.blocked = 0; if (t === active && document.activeElement === $('#url') && !$('#url').value) $('#url').blur(); try { OB.shieldReset(view.getWebContentsId()); } catch (_) {} render(); if (t === active) syncNav(); });
   view.addEventListener('did-navigate-in-page', (e) => { if (e.isMainFrame) { t.url = e.url; render(); if (t === active) syncNav(); } });
@@ -68,6 +68,8 @@ function show(t) {
   if (!t) return;
   active = t;
   for (const x of tabs) x.view.classList.toggle('on', x === t || x === splitTab);
+  { const b = $('.gh-banner'); if (b) b.remove(); }
+  if (!t.loading) detectGitHub(t);
   t.view.classList.toggle('right', false);
   if (splitTab) splitTab.view.classList.add('right');
   render(); syncNav();
@@ -281,6 +283,7 @@ addEventListener('mousedown', (e) => { if (!e.target.closest('#ctx')) $('#ctx').
 // --------------------------------------------- GitHub ↔ Omarchy Store banner ----
 // Browsing a GitHub repo that is in the Omarchy Store? Offer the one-click install.
 function detectGitHub(t) {
+  if (t !== active) return;
   const old = $('.gh-banner'); if (old) old.remove();
   const m = t.url.match(/^https:\/\/github\.com\/([\w.-]+\/[\w.-]+)/);
   if (!m || !S.catalogApps) return;

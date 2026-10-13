@@ -20,7 +20,7 @@ The Chromium browser built for Omarchy. The Omarchy Store is built in, your Omar
 Get it from [omarchystore.com](https://omarchystore.com/app/omarchy-browser/), or:
 
 ```bash
-sudo pacman -U https://github.com/omarchy-community/omarchy-browser/releases/latest/download/omarchy-browser-2.0.0-1-any.pkg.tar.zst
+sudo pacman -U https://github.com/omarchy-community/omarchy-browser/releases/latest/download/omarchy-browser-2.0.1-1-any.pkg.tar.zst
 ```
 
 ## Shortcuts

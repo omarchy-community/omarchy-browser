@@ -4,6 +4,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 const mine = /^file:\/\/.*\/(newtab|reader)\.html(#|$)/.test(location.href);
 if (mine) contextBridge.exposeInMainWorld('obPage', {
   data: () => ipcRenderer.invoke('page-data'),
+  weather: () => ipcRenderer.invoke('weather'),
   fetch: (url) => ipcRenderer.invoke('page-fetch', url),
   catalog: () => ipcRenderer.invoke('store-catalog', false),
   installed: () => ipcRenderer.invoke('store-installed'),
