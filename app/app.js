@@ -2,6 +2,8 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // Some store descriptions arrive with HTML entities already in them (&amp;): show them as text.
+  const unent = (s) => String(s == null ? '' : s).replace(/&(amp|lt|gt|quot|#39);/g, (_, e) => ({ amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" }[e]));
   const NEWTAB = new URL('newtab.html', location.href).href;
   const SEARCH = 'https://duckduckgo.com/?q=';
 
@@ -137,7 +139,7 @@
   const row = (a) => `
     <div class="row" data-app="${esc(a.id)}">
       <img src="${esc(a.icon)}" alt="" loading="lazy">
-      <div class="meta"><div class="n">${esc(a.name)}</div><div class="s">${esc(a.summary)}</div></div>
+      <div class="meta"><div class="n">${esc(unent(a.name))}</div><div class="s">${esc(unent(a.summary))}</div></div>
       <button class="get" data-get="${esc(a.id)}">GET</button>
     </div>`;
 
@@ -194,7 +196,7 @@
         <button class="ghost" id="d-page">Open store page</button>
         ${a.homepage ? `<button class="ghost" id="d-web">Website</button>` : ''}
       </div>
-      <div class="d-desc">${esc(a.description || a.summary)}</div>`;
+      <div class="d-desc">${esc(unent(a.description || a.summary))}</div>`;
     d.hidden = false;
     d.scrollTop = 0;
     $('d-back').onclick = () => { d.hidden = true; };

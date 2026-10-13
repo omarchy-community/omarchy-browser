@@ -1,7 +1,7 @@
 {
   "name": "omarchy-browser",
   "productName": "Omarchy Browser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Chromium-based web browser with the Omarchy Store built in",
   "main": "main.js",
   "author": "Omarchy Development Labs",

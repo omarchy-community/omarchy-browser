@@ -1,12 +1,13 @@
 # Maintainer: Omarchy Development Labs <omarchystore@gmail.com>
 pkgname=omarchy-browser
-pkgver=1.0.0
+pkgver=1.0.1
 pkgrel=1
 pkgdesc="Chromium-based web browser with the Omarchy Store built in"
 arch=('any')
 url="https://github.com/omarchy-community/omarchy-browser"
 license=('MIT')
 depends=('electron43')
+install=omarchy-browser.install
 
 package() {
   install -d "$pkgdir/usr/share/omarchy-browser/app/icons"
@@ -38,4 +39,6 @@ EOF
   for s in 16 24 32 48 64 128 256 512; do
     install -Dm644 "$startdir/app/icons/${s}x${s}.png" "$pkgdir/usr/share/icons/hicolor/${s}x${s}/apps/omarchy-browser.png"
   done
+  install -Dm644 "$startdir/brand/icon.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/omarchy-browser.svg"
+  install -Dm644 "$startdir/app/icons/512x512.png" "$pkgdir/usr/share/pixmaps/omarchy-browser.png"
 }

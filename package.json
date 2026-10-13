@@ -1,0 +1,80 @@
+{
+  "name": "omarchy-browser",
+  "version": "2.0.0",
+  "description": "Omarchy Browser — Next-gen Chromium browser with AI sidebar, privacy engine, workspaces, and Omarchy Store built-in",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder --linux --x64 --dir",
+    "package": "electron-builder --linux --x64",
+    "postinstall": "electron-builder install-app-deps",
+    "lint": "eslint src/"
+  },
+  "build": {
+    "appId": "com.omarchy.browser",
+    "productName": "Omarchy Browser",
+    "copyright": "Omarchy Development Labs",
+    "directories": {
+      "output": "dist"
+    },
+    "linux": {
+      "target": [
+        "dir",
+        "pacman"
+      ],
+      "category": "Network",
+      "maintainer": "Omarchy Development Labs <omarchystore@gmail.com>",
+      "icon": "assets/icons",
+      "desktop": {
+        "Name": "Omarchy Browser",
+        "Comment": "Next-gen Chromium browser with AI sidebar, privacy engine, and Omarchy Store built-in",
+        "Categories": "Network;WebBrowser;Development;",
+        "Keywords": "browser;chromium;ai;privacy;store;omarchy;linux;workspace;developer;"
+      }
+    },
+    "asar": true,
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/store-catalog.json",
+        "to": "store-catalog.json"
+      },
+      {
+        "from": "assets/blocklists",
+        "to": "blocklists"
+      }
+    ],
+    "afterSign": "build/notarize.js"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "better-sqlite3": "^9.4.3",
+    "axios": "^1.6.7",
+    "fuse.js": "^7.0.0",
+    "readability": "^2.0.0",
+    "jsdom": "^24.0.0",
+    "marked": "^12.0.0",
+    "highlight.js": "^11.9.0",
+    "uuid": "^9.0.1",
+    "zod": "^3.22.4",
+    "yaml": "^2.4.0",
+    "ws": "^8.16.0",
+    "node-fetch": "^3.3.2",
+    "public-ip": "^7.0.1",
+    "dns-packet": "^5.6.1",
+    "tr46": "^5.0.0"
+  },
+  "devDependencies": {
+    "electron": "^28.2.0",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.56.0",
+    "@electron/asar": "^3.2.8"
+  },
+  "author": "Omarchy Development Labs",
+  "license": "MIT"
+}
