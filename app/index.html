@@ -8,7 +8,7 @@
 </head>
 <body>
 <header class="bar">
-  <div class="brand" title="Omarchy Browser"><img src="icons/32x32.png" alt=""></div>
+  <button class="ws-btn" id="ws-btn" title="Workspaces (Ctrl+Shift+W)"><span class="ws-dot"></span><span id="ws-name">Main</span></button>
   <div class="tabs" id="tabs"></div>
   <button class="tab-new" id="tab-new" title="New tab (Ctrl+T)">+</button>
   <div class="drag"></div>
@@ -22,9 +22,25 @@
   <button id="back" title="Back (Alt+Left)">&#8592;</button>
   <button id="fwd" title="Forward (Alt+Right)">&#8594;</button>
   <button id="reload" title="Reload (Ctrl+R)">&#8635;</button>
-  <form class="omni" id="omni"><input id="url" spellcheck="false" autocomplete="off" placeholder="Search the web or type an address"></form>
+  <form class="omni" id="omni" autocomplete="off">
+    <span class="shield" id="shield" title="Trackers blocked on this page"><svg viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5.2-3.4 9.6-8 11-4.6-1.4-8-5.8-8-11V5l8-3z"/></svg><b id="shield-n">0</b></span>
+    <input id="url" spellcheck="false" autocomplete="off" placeholder="Search the web or type an address">
+    <button type="button" id="reader-btn" class="ico" title="Reader view (Ctrl+Shift+R)" hidden>&#9776;</button>
+    <button type="button" id="star" class="ico" title="Bookmark (Ctrl+D)">&#9734;</button>
+    <div class="suggest" id="suggest" hidden></div>
+  </form>
+  <button id="split-btn" class="ico" title="Split view (Ctrl+\)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="16" rx="2"/><rect x="13" y="4" width="8" height="16" rx="2"/></svg></button>
+  <button id="dl-btn" class="ico" title="Downloads"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v3h16v-3"/></svg><i id="dl-dot" hidden></i></button>
+  <button id="palette-btn" class="ico" title="Command palette (Ctrl+K)"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
   <button id="store-toggle" class="store-btn" title="Omarchy Store (Ctrl+B)"><img src="icons/store-64.png" alt="">Store</button>
 </nav>
+<div class="findbar" id="findbar" hidden>
+  <input id="find-q" placeholder="Find in page">
+  <span id="find-n" class="muted"></span>
+  <button id="find-prev" title="Previous (Shift+Enter)">&#8593;</button>
+  <button id="find-next" title="Next (Enter)">&#8595;</button>
+  <button id="find-x" title="Close (Esc)">&#10005;</button>
+</div>
 <div class="body">
   <main class="pages" id="pages"></main>
   <aside class="store" id="store" hidden>
@@ -37,7 +53,27 @@
     <div class="store-detail" id="store-detail" hidden></div>
   </aside>
 </div>
+
+<div class="pop" id="ws-pop" hidden>
+  <div class="pop-h">Workspaces <button id="ws-add" class="ghost sm">+ New</button></div>
+  <div id="ws-list"></div>
+  <div class="pop-f muted">Each workspace keeps its own tabs. Switch any time.</div>
+</div>
+<div class="pop" id="dl-pop" hidden>
+  <div class="pop-h">Downloads <button id="dl-clear" class="ghost sm">Clear</button></div>
+  <div id="dl-list"><div class="muted pad">Nothing downloaded yet.</div></div>
+</div>
+<div class="palette" id="palette" hidden>
+  <div class="pal-box">
+    <input id="pal-q" placeholder="Type a command, a site, or an app to install…" spellcheck="false" autocomplete="off">
+    <div id="pal-list"></div>
+    <div class="pal-f muted"><span>&#8593;&#8595; move</span><span>&#9166; open</span><span>Esc close</span><span>Tip: type <b>&gt;</b> for commands, <b>@</b> for apps, <b>/</b> for tabs</span></div>
+  </div>
+</div>
+<div class="ctx" id="ctx" hidden></div>
 <div class="toast" id="toast" hidden></div>
 <script src="app.js"></script>
+<script src="store.js"></script>
+<script src="palette.js"></script>
 </body>
 </html>

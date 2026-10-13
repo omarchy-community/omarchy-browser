@@ -2,34 +2,91 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>New Tab</title>
+<title>New tab</title>
 <style>
-  :root { color-scheme: dark; }
-  html, body { margin: 0; height: 100%; background: radial-gradient(1200px 600px at 50% -10%, #24305a 0%, #0d0d12 60%); color: #e8e8ed; font-family: system-ui, sans-serif; }
-  .wrap { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 40px; box-sizing: border-box; }
-  img { width: 104px; height: 104px; border-radius: 24px; box-shadow: 0 18px 60px rgba(122,162,247,.35); }
-  h1 { margin: 0; font-size: 34px; letter-spacing: -.5px; }
-  p { margin: 0; color: #9aa0b8; }
-  form { width: min(640px, 90vw); }
-  input { width: 100%; box-sizing: border-box; padding: 16px 22px; font-size: 16px; border-radius: 999px; border: 1px solid #2f3550; background: rgba(20,20,30,.85); color: #e8e8ed; outline: none; }
-  input:focus { border-color: #7aa2f7; box-shadow: 0 0 0 4px rgba(122,162,247,.2); }
-  .links { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-  a { color: #c0caf5; text-decoration: none; padding: 10px 16px; border: 1px solid #2f3550; border-radius: 12px; background: rgba(20,20,30,.6); }
-  a:hover { border-color: #7aa2f7; color: #fff; }
+:root { --bg:#0d0d12; --panel:#171722; --hover:#20202d; --fg:#e8e8ed; --muted:#8a8fa8; --accent:#7aa2f7; --accent2:#9ece6a; --border:rgba(255,255,255,.12); }
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--fg); font: 14px/1.5 system-ui, sans-serif; }
+body { background: radial-gradient(1200px 600px at 50% -10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%), var(--bg); }
+.wrap { max-width: 980px; margin: 0 auto; padding: 9vh 32px 60px; }
+.logo { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 30px; }
+.logo img { width: 64px; height: 64px; border-radius: 16px; }
+.logo h1 { margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -.5px; }
+.logo small { display: block; color: var(--muted); font-weight: 400; font-size: 13px; }
+.search { display: flex; align-items: center; height: 54px; margin: 0 auto 44px; max-width: 680px; padding: 0 22px; border-radius: 999px; background: var(--panel); border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+.search input { flex: 1; border: 0; background: transparent; color: var(--fg); font: inherit; font-size: 17px; outline: none; }
+.search span { color: var(--muted); font-size: 12px; }
+h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin: 28px 0 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+.tile { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px 12px; border-radius: 16px; background: var(--panel); border: 1px solid var(--border); cursor: pointer; text-decoration: none; color: var(--fg); }
+.tile:hover { background: var(--hover); border-color: var(--accent); transform: translateY(-2px); transition: .15s; }
+.tile img { width: 32px; height: 32px; border-radius: 8px; }
+.tile .f { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); color: var(--bg); display: grid; place-items: center; font-weight: 800; font-size: 16px; }
+.tile span { font-size: 12px; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.apps { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 10px; }
+.app { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--panel); border: 1px solid var(--border); cursor: pointer; }
+.app:hover { border-color: var(--accent2); background: var(--hover); }
+.app img { width: 44px; height: 44px; border-radius: 11px; }
+.app b { display: block; }
+.app small { color: var(--muted); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.app .meta { min-width: 0; flex: 1; }
+.pill { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; color: var(--accent2); background: color-mix(in srgb, var(--accent2) 15%, transparent); }
+.foot { margin-top: 40px; display: flex; justify-content: center; gap: 22px; color: var(--muted); font-size: 12px; }
+.foot b { color: var(--accent2); }
+.empty { color: var(--muted); font-size: 13px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <img src="icons/256x256.png" alt="">
-  <h1>Omarchy Browser</h1>
-  <p>The web, with the Omarchy Store one click away.</p>
-  <form action="https://duckduckgo.com/" method="get"><input name="q" autofocus placeholder="Search the web" autocomplete="off"></form>
-  <div class="links">
-    <a href="https://omarchystore.com/">Omarchy Store</a>
-    <a href="https://omarchy.org/">Omarchy</a>
-    <a href="https://github.com/">GitHub</a>
-    <a href="https://www.reddit.com/r/omarchy/">r/omarchy</a>
-  </div>
+  <div class="logo"><img src="icons/256x256.png" alt=""><div><h1>Omarchy Browser</h1><small id="greet">Good evening</small></div></div>
+  <form class="search" id="f"><input id="q" placeholder="Search the web or type an address" autofocus spellcheck="false" autocomplete="off"><span>Ctrl+K for commands</span></form>
+  <h2>Top sites</h2>
+  <div class="grid" id="top"><div class="empty">Sites you visit most will show up here.</div></div>
+  <h2 id="bm-h" hidden>Bookmarks</h2>
+  <div class="grid" id="bm"></div>
+  <h2>From the Omarchy Store</h2>
+  <div class="apps" id="apps"><div class="empty">Loading…</div></div>
+  <div class="foot"><span>Shield <b id="shield">on</b></span><span>Theme <b id="theme">Omarchy</b></span><span>The world's largest app store for Omarchy, built in</span></div>
 </div>
+<script>
+const P = window.obPage;
+const $ = (s) => document.querySelector(s);
+const h = new Date().getHours(); $('#greet').textContent = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+$('#f').onsubmit = (e) => { e.preventDefault(); P.open($('#q').value); };
+function theme(t) {
+  if (!t || !t.background) return;
+  const r = document.documentElement.style;
+  r.setProperty('--bg', t.background); r.setProperty('--panel', t.lighter_background || t.background); r.setProperty('--hover', t.selection || '#20202d');
+  r.setProperty('--fg', t.foreground || '#e8e8ed'); r.setProperty('--muted', t.muted || t.dark_foreground || '#8a8fa8');
+  r.setProperty('--accent', t.accent || t.blue || '#7aa2f7'); r.setProperty('--accent2', t.green || t.cyan || '#9ece6a');
+  $('#theme').textContent = t.name || 'Omarchy';
+}
+function host(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (_) { return u; } }
+function tile(x) {
+  const a = document.createElement('a'); a.className = 'tile'; a.href = x.url;
+  a.innerHTML = `<img src="https://icons.duckduckgo.com/ip3/${host(x.url)}.ico" alt=""><span></span>`;
+  a.querySelector('span').textContent = x.title && x.title.length < 24 ? x.title : host(x.url);
+  a.querySelector('img').onerror = function () { const f = document.createElement('div'); f.className = 'f'; f.textContent = host(x.url)[0].toUpperCase(); this.replaceWith(f); };
+  a.onclick = (e) => { e.preventDefault(); P.open(x.url); };
+  return a;
+}
+(async () => {
+  const d = await P.data(); theme(d.theme); $('#shield').textContent = d.shield ? 'on' : 'off';
+  if (d.top.length) { $('#top').innerHTML = ''; d.top.forEach((x) => $('#top').appendChild(tile(x))); }
+  if (d.bookmarks.length) { $('#bm-h').hidden = false; d.bookmarks.slice(0, 16).forEach((x) => $('#bm').appendChild(tile(x))); }
+  try {
+    const c = await P.catalog(); const inst = new Set(await P.installed());
+    const pick = [...c.hero.map((id) => c.apps.find((a) => a.id === id)).filter(Boolean), ...c.apps].filter((a, i, arr) => arr.indexOf(a) === i).slice(0, 6);
+    $('#apps').innerHTML = '';
+    for (const a of pick) {
+      const el = document.createElement('div'); el.className = 'app';
+      el.innerHTML = `<img src="${a.icon}" alt=""><div class="meta"><b></b><small></small></div><span class="pill">${inst.has(a.id) ? 'Installed' : 'Get'}</span>`;
+      el.querySelector('b').textContent = a.name; el.querySelector('small').textContent = a.summary.replace(/&amp;/g, '&');
+      el.onclick = () => P.open('https://omarchystore.com/app/' + encodeURIComponent(a.id) + '/');
+      $('#apps').appendChild(el);
+    }
+  } catch (_) { $('#apps').innerHTML = '<div class="empty">Store is offline right now.</div>'; }
+})();
+</script>
 </body>
 </html>
